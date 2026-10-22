@@ -14,6 +14,7 @@ if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
   });
 }
  
+
 async function sendEmail(to, subject, text) {
   if (!transporter) {
     console.log('\n==============================');
