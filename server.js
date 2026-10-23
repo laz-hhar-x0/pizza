@@ -9,7 +9,7 @@ const { sendSms } = require('./sms');
 
 const app = express();
 app.set('trust proxy', 1); // مهم على Render (وراء proxy)
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 const SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 if (!process.env.SESSION_SECRET) {
   console.warn('⚠️  SESSION_SECRET is missing in .env — it will change every time the server restarts.');
@@ -224,6 +224,4 @@ app.get('/welcome', (req, res) => {
 
 app.use(express.static(path.join(__dirname, 'public'), { index: 'index.html' }));
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
-});
+app.listen(PORT, () => console.log('Server running on port ' + PORT));
