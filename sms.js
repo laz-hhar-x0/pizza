@@ -1,11 +1,14 @@
-// sms.js — يدعم: SMS Gateway (تلفون) أو Infobip أو وضع التجريب
+// sms.js — يدعم 3 أوضاع حسب ما هو موجود في .env:
+// 1) SMS Gateway (تلفون Android):  SMS_GATE_USER + SMS_GATE_PASS
+// 2) Infobip:                       INFOBIP_API_KEY + INFOBIP_BASE_URL
+// 3) وضع التجريب: الرمز يطلع في الـ terminal
 
 function digits(phone) {
   let p = String(phone).replace(/[\s.\-()]/g, '');
   if (p.startsWith('00213')) p = '213' + p.slice(5);
   else if (p.startsWith('+213')) p = p.slice(1);
   else if (p.startsWith('0')) p = '213' + p.slice(1);
-  return p;
+  return p; // 213555123456
 }
 function toInternational(phone) { return '+' + digits(phone); }
 
@@ -42,6 +45,7 @@ async function viaInfobip(to, text) {
 
 async function sendSms(phone, text) {
   const to = digits(phone);
+
   if (process.env.SMS_GATE_USER && process.env.SMS_GATE_PASS) {
     await viaSmsGate(to, text);
   } else if (process.env.INFOBIP_API_KEY && process.env.INFOBIP_BASE_URL) {

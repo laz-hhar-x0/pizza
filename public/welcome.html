@@ -1,225 +1,162 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <title>الرئيسية</title>
+  <title>Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    
-    :root {
-      --bg: #0b1120; --card: #111827; --field: #0f172a; --border: #1f2a3d;
-      --text: #e5e7eb; --muted: #94a3b8;
-      --primary: #0d9488; --primary-hover: #14b8a6; --glow: rgba(20,184,166,.25);
-      --error: #f87171; --ok: #4ade80;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; min-height: 100vh; font-family: "Segoe UI", Tahoma, Arial, sans-serif; color: var(--text);
-      background: var(--bg); overflow-x: hidden;
-    }
-    body::before, body::after {
-      content: ""; position: fixed; width: 380px; height: 380px; border-radius: 50%;
-      filter: blur(90px); opacity: .3; z-index: 0; pointer-events: none;
-    }
-    body::before { background: #0d9488; top: -120px; right: -100px; animation: float1 14s ease-in-out infinite; }
-    body::after  { background: #1d4ed8; bottom: -140px; left: -100px; animation: float2 17s ease-in-out infinite; }
-    @keyframes float1 { 50% { transform: translate(-60px, 80px); } }
-    @keyframes float2 { 50% { transform: translate(70px, -70px); } }
+:root{--bg:#070808;--card:#0e1010;--line:#2a3030;--text:#ececec;--muted:#8a9292;--accent:#55A9A0;--on-accent:#041211;--error:#f0716b;--ok:#6fd49a;--glow:rgba(85,169,160,.28)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:"Inter","Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);background:var(--bg);overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;border-radius:50%;z-index:0;pointer-events:none}
+body::before{width:480px;height:480px;top:-170px;right:-140px;background:radial-gradient(circle,rgba(85,169,160,.24),transparent 65%);animation:drift1 16s ease-in-out infinite}
+body::after{width:420px;height:420px;bottom:-170px;left:-130px;background:radial-gradient(circle,rgba(85,169,160,.14),transparent 65%);animation:drift2 20s ease-in-out infinite}
+@keyframes drift1{50%{transform:translate(-70px,90px)}}
+@keyframes drift2{50%{transform:translate(80px,-70px)}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+label{display:block;margin:18px 0 2px;font-weight:500;font-size:13px;color:var(--muted)}
+input{--track:#2a3030;width:100%;padding:11px 2px 13px;border:0;border-radius:0;background-color:transparent;background-image:linear-gradient(var(--accent),var(--accent)),linear-gradient(var(--track),var(--track));background-repeat:no-repeat;background-size:0% 2px,100% 1.5px;background-position:left bottom,left bottom;background-origin:border-box;color:var(--text);font-size:16px;font-family:inherit;outline:none;transition:background-size .35s ease}
+input::placeholder{color:#4b5454}
+input:focus{background-size:100% 2px,100% 1.5px;transition:background-size 1.6s cubic-bezier(.4,0,.2,1)}
+input.invalid{--track:var(--error);animation:shake .35s}
+input:-webkit-autofill{-webkit-text-fill-color:var(--text);caret-color:var(--text);transition:background-color 600000s 0s,color 600000s 0s,background-size 1.6s cubic-bezier(.4,0,.2,1)}
+.err{color:var(--error);font-size:13px;min-height:18px;margin-top:4px}
+.hidden{display:none}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
-    /* ---------- الشريط العلوي ---------- */
-    .topbar {
-      position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px;
-      padding: 12px 16px; background: rgba(17,24,39,.75); backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border); animation: slideDown .5s ease both;
-    }
-    @keyframes slideDown { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: none; } }
-    .menu-btn {
-      width: 44px; height: 44px; border: 1px solid var(--border); border-radius: 12px; background: var(--field);
-      color: var(--text); font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: background .2s, transform .15s, border-color .2s;
-    }
-    .menu-btn:hover { background: #162036; border-color: var(--primary-hover); transform: scale(1.05); }
-    .topbar .title { font-size: 18px; font-weight: 700; }
-
-    /* ---------- القائمة الجانبية ---------- */
-    .overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,.6); opacity: 0; pointer-events: none;
-      transition: opacity .3s; z-index: 30;
-    }
-    .overlay.show { opacity: 1; pointer-events: auto; }
-    .drawer {
-      position: fixed; top: 0; right: 0; height: 100%; width: 280px; max-width: 82%;
-      background: var(--card); border-left: 1px solid var(--border); z-index: 40;
-      transform: translateX(100%); transition: transform .3s cubic-bezier(.2,.8,.2,1);
-      display: flex; flex-direction: column; padding: 20px 14px; box-shadow: -10px 0 30px rgba(0,0,0,.5);
-    }
-    .drawer.open { transform: translateX(0); }
-    .drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 0 6px; }
-    .drawer-head b { font-size: 18px; }
-    .close-btn { border: 0; background: none; font-size: 22px; cursor: pointer; color: var(--muted); transition: transform .2s, color .2s; }
-    .close-btn:hover { color: var(--text); transform: rotate(90deg); }
-    .nav-item {
-      display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 12px; margin-bottom: 6px;
-      border: 0; border-radius: 12px; background: none; font-size: 16px; font-family: inherit;
-      color: var(--text); cursor: pointer; text-align: right;
-      opacity: 0; transform: translateX(24px); transition: background .2s, opacity .35s, transform .35s;
-    }
-    .drawer.open .nav-item { opacity: 1; transform: none; }
-    .drawer.open .nav-item:nth-of-type(1) { transition-delay: .08s; }
-    .drawer.open .nav-item:nth-of-type(2) { transition-delay: .14s; }
-    .drawer.open .nav-item:nth-of-type(3) { transition-delay: .2s; }
-    .drawer.open .nav-item:nth-of-type(4) { transition-delay: .26s; }
-    .nav-item:hover { background: #162036; }
-    .nav-item.active { background: rgba(13,148,136,.18); color: var(--primary-hover); font-weight: 700; }
-    .nav-item.logout { color: var(--error); margin-top: auto; }
-    .nav-item.logout:hover { background: rgba(248,113,113,.12); }
-    .nav-item .ic { font-size: 20px; width: 24px; text-align: center; }
-
-    /* ---------- المحتوى ---------- */
-    main { position: relative; z-index: 1; padding: 20px 16px 40px; display: flex; justify-content: center; }
-    .card {
-      width: 100%; max-width: 520px; background: var(--card); border: 1px solid var(--border);
-      border-radius: 20px; padding: 32px 24px; box-shadow: 0 20px 50px rgba(0,0,0,.5);
-      animation: fadeUp .6s ease both;
-    }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
-    .page { display: none; }
-    .page.active { display: block; animation: fadeUp .4s ease both; }
-    .home { text-align: center; padding: 20px 0; }
-    .emoji { font-size: 60px; display: inline-block; animation: bounce 2s ease-in-out infinite; }
-    @keyframes bounce { 50% { transform: translateY(-12px) scale(1.08); } }
-    .home h1 { font-size: 32px; margin: 12px 0 8px; word-break: break-word; }
-    .home p { color: var(--muted); margin: 0; }
-    h2 { margin: 0 0 20px; font-size: 22px; }
-
-    label { display: block; margin: 14px 0 6px; font-weight: 600; font-size: 14px; }
-    input {
-      width: 100%; padding: 13px 14px; border: 1.5px solid var(--border); border-radius: 12px;
-      background: var(--field); color: var(--text); font-size: 16px; outline: none; font-family: inherit;
-      transition: border-color .2s, box-shadow .2s;
-    }
-    input:focus { border-color: var(--primary-hover); box-shadow: 0 0 0 4px var(--glow); }
-    input.invalid { border-color: var(--error); animation: shake .35s; }
-    @keyframes shake { 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 75% { transform: translateX(-3px); } }
-    input[readonly] { background: #0b1322; color: var(--muted); cursor: not-allowed; }
-    #pPhone { direction: ltr; text-align: left; }
-    .hint { color: var(--muted); font-size: 12px; margin-top: 4px; }
-    .err { color: var(--error); font-size: 13px; min-height: 18px; margin-top: 4px; }
-    .msg { font-size: 14px; margin-top: 12px; min-height: 20px; }
-    .msg.ok { color: var(--ok); animation: fadeUp .3s ease both; }
-    .msg.bad { color: var(--error); }
-    .btn {
-      width: 100%; margin-top: 18px; padding: 14px; border: 0; border-radius: 12px; background: var(--primary);
-      color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit;
-      transition: background .2s, transform .15s, box-shadow .2s;
-    }
-    .btn:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 8px 20px var(--glow); }
-    .btn:active:not(:disabled) { transform: scale(.98); }
-    .btn:disabled { opacity: .55; cursor: not-allowed; }
-
-    .contact-row {
-      display: flex; align-items: center; gap: 12px; padding: 14px; border: 1.5px solid var(--border);
-      border-radius: 12px; margin-bottom: 10px; text-decoration: none; color: var(--text); background: var(--field);
-      transition: transform .2s, border-color .2s; animation: fadeUp .5s ease both;
-    }
-    a.contact-row:hover { transform: translateX(-4px); border-color: var(--primary-hover); }
-    .contact-row:nth-of-type(1) { animation-delay: .05s; }
-    .contact-row:nth-of-type(2) { animation-delay: .12s; }
-    .contact-row:nth-of-type(3) { animation-delay: .19s; }
-    .contact-row .ic { font-size: 22px; }
-    .contact-row small { display: block; color: var(--muted); }
-    .contact-row .val { direction: ltr; unicode-bidi: plaintext; }
-
-    /* Ripple */
-    .btn { position: relative; overflow: hidden; }
-    .ripple {
-      position: absolute; border-radius: 50%; background: rgba(255,255,255,.35);
-      transform: scale(0); animation: ripple .6s linear; pointer-events: none;
-    }
-    @keyframes ripple { to { transform: scale(4); opacity: 0; } }
-
-    /* Confetti */
-    .confetti {
-      position: fixed; top: -14px; width: 8px; height: 14px; z-index: 5;
-      pointer-events: none; animation: fall linear forwards;
-    }
-    @keyframes fall { to { transform: translateY(105vh) rotate(720deg); opacity: .8; } }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation: none !important; transition: none !important; }
-      .drawer.open .nav-item { opacity: 1; transform: none; }
-      .confetti { display: none; }
-    }
-  </style>
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(14,16,16,.78);backdrop-filter:blur(10px);border-bottom:1px solid #1a1e1e;animation:slideDown .5s ease both}
+@keyframes slideDown{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:none}}
+.menu-btn{width:42px;height:42px;border:1px solid var(--line);border-radius:12px;background:transparent;color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s,transform .15s}
+.menu-btn:hover{border-color:var(--accent);color:var(--accent);transform:scale(1.05)}
+.topbar .title{font-size:18px;font-weight:700}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);opacity:0;pointer-events:none;transition:opacity .3s;z-index:30}
+.overlay.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;left:0;height:100%;width:280px;max-width:82%;background:var(--card);border-right:1px solid #1a1e1e;z-index:40;transform:translateX(-100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;padding:20px 14px;box-shadow:10px 0 30px rgba(0,0,0,.6)}
+.drawer.open{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding:0 6px}
+.drawer-head b{font-size:18px}
+.close-btn{border:0;background:none;font-size:22px;cursor:pointer;color:var(--muted);transition:transform .25s,color .2s}
+.close-btn:hover{color:var(--text);transform:rotate(90deg)}
+.nav-item{display:flex;align-items:center;gap:12px;width:100%;padding:13px 12px;margin-bottom:6px;border:0;border-radius:12px;background:none;font-size:16px;font-family:inherit;color:var(--text);cursor:pointer;text-align:left;opacity:0;transform:translateX(-24px);transition:background .2s,opacity .35s,transform .35s}
+.drawer.open .nav-item{opacity:1;transform:none}
+.drawer.open .nav-item:nth-of-type(1){transition-delay:.08s}
+.drawer.open .nav-item:nth-of-type(2){transition-delay:.14s}
+.drawer.open .nav-item:nth-of-type(3){transition-delay:.2s}
+.drawer.open .nav-item:nth-of-type(4){transition-delay:.26s}
+.nav-item:hover{background:rgba(85,169,160,.1)}
+.nav-item.active{background:rgba(85,169,160,.16);color:var(--accent);font-weight:700}
+.nav-item.logout{color:var(--error);margin-top:auto}
+.nav-item.logout:hover{background:rgba(240,113,107,.12)}
+.nav-item .ic{font-size:20px;width:24px;text-align:center}
+main{position:relative;z-index:1;padding:24px 16px 40px;display:flex;justify-content:center}
+.card{width:100%;max-width:520px;background:var(--card);border:1px solid #1a1e1e;border-radius:22px;padding:34px 28px;box-shadow:0 30px 60px rgba(0,0,0,.6);animation:rise .6s ease both}
+.page{display:none}
+.page.active{display:block;animation:rise .45s ease both}
+.home{text-align:center;padding:20px 0}
+.emoji{font-size:58px;display:inline-block;animation:bounce 2s ease-in-out infinite}
+@keyframes bounce{50%{transform:translateY(-12px) scale(1.08)}}
+.home h1{font-size:30px;margin:14px 0 8px;font-weight:700;word-break:break-word}
+.home p{color:var(--muted);margin:0}
+h2{margin:0 0 6px;font-size:22px;font-weight:700}
+#pPhone{direction:ltr;text-align:left;background-position:left bottom,left bottom}
+input[readonly]{color:var(--muted);cursor:not-allowed;background-size:0% 2px,100% 1.5px!important}
+.hint{color:var(--muted);font-size:12px;margin-top:6px}
+.msg{font-size:14px;margin-top:12px;min-height:20px}
+.msg.ok{color:var(--ok);animation:rise .3s ease both}
+.msg.bad{color:var(--error)}
+.btn{position:relative;overflow:hidden;width:100%;margin-top:22px;padding:14px;border:0;border-radius:12px;background:var(--accent);color:var(--on-accent);font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:transform .15s,box-shadow .25s,filter .2s}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 26px var(--glow);filter:brightness(1.08)}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.ripple{position:absolute;border-radius:50%;background:rgba(0,0,0,.25);transform:scale(0);animation:ripple .6s linear;pointer-events:none}
+@keyframes ripple{to{transform:scale(4);opacity:0}}
+.contact-row{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:14px;margin-top:12px;text-decoration:none;color:var(--text);transition:transform .2s,border-color .2s;animation:rise .5s ease both}
+a.contact-row:hover{transform:translateX(4px);border-color:var(--accent)}
+.contact-row:nth-of-type(1){animation-delay:.05s}
+.contact-row:nth-of-type(2){animation-delay:.12s}
+.contact-row:nth-of-type(3){animation-delay:.19s}
+.contact-row .ic{font-size:22px}
+.contact-row small{display:block;color:var(--muted)}
+.contact-row .val{direction:ltr;unicode-bidi:plaintext}
+.confetti{position:fixed;top:-14px;width:8px;height:14px;z-index:5;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.8}}
+</style>
 </head>
 <body>
   <header class="topbar">
-    <button class="menu-btn" id="menuBtn" aria-label="فتح القائمة">☰</button>
-    <span class="title" id="topTitle">الرئيسية</span>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+    <span class="title" id="topTitle">Home</span>
   </header>
 
   <div class="overlay" id="overlay"></div>
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="drawer-head">
-      <b>القائمة</b>
-      <button class="close-btn" id="closeBtn" aria-label="إغلاق">✕</button>
+      <b>Menu</b>
+      <button class="close-btn" id="closeBtn" aria-label="Close">✕</button>
     </div>
-    <button class="nav-item active" data-page="home"><span class="ic">🏠</span>الرئيسية</button>
-    <button class="nav-item" data-page="profile"><span class="ic">👤</span>بروفايلك</button>
-    <button class="nav-item" data-page="contact"><span class="ic">📞</span>اتصل بنا</button>
-    <button class="nav-item logout" id="logout"><span class="ic">🚪</span>تسجيل الخروج</button>
+    <button class="nav-item active" data-page="home"><span class="ic">🏠</span>Home</button>
+    <button class="nav-item" data-page="profile"><span class="ic">👤</span>Profile</button>
+    <button class="nav-item" data-page="contact"><span class="ic">📞</span>Contact us</button>
+    <button class="nav-item logout" id="logout"><span class="ic">🚪</span>Sign out</button>
   </aside>
 
   <main>
     <div class="card">
-      <!-- الرئيسية -->
+      <!-- Home -->
       <section class="page home active" id="page-home">
         <div class="emoji">🎉</div>
-        <h1 id="greeting">أهلا بك</h1>
-        <p>سعداء بوجودك معنا</p>
+        <h1 id="greeting">Welcome</h1>
+        <p>We're glad to have you</p>
       </section>
 
-      <!-- بروفايلك -->
+      <!-- Profile -->
       <section class="page" id="page-profile">
-        <h2>بروفايلك</h2>
+        <h2>Profile</h2>
         <form id="profileForm" novalidate>
-          <label for="pName">الاسم</label>
+          <label for="pName">Name</label>
           <input id="pName" type="text" maxlength="50" autocomplete="name" />
           <div class="err" id="pNameErr"></div>
 
-          <label for="pPhone">رقم الهاتف</label>
+          <label for="pPhone">Phone number</label>
           <input id="pPhone" type="tel" readonly />
-          <div class="hint">الرقم ما يتبدلش لأنو هو اللي تحققنا منو.</div>
+          <div class="hint">Your number can't be changed because it's the one we verified.</div>
 
-          <button class="btn" type="submit" id="saveBtn">حفظ التعديلات</button>
+          <button class="btn" type="submit" id="saveBtn">Save changes</button>
           <div class="msg" id="profileMsg"></div>
         </form>
       </section>
 
-      <!-- اتصل بنا -->
+      <!-- Contact us -->
       <section class="page" id="page-contact">
-        <h2>اتصل بنا</h2>
+        <h2>Contact us</h2>
         <a class="contact-row" href="mailto:lazhhar2@gmail.com">
           <span class="ic">✉️</span>
-          <span><small>الإيميل</small><span class="val">lazhhar2@gmail.com</span></span>
+          <span><small>Email</small><span class="val">lazhhar2@gmail.com</span></span>
         </a>
         <a class="contact-row" href="tel:+213779791498">
           <span class="ic">📱</span>
-          <span><small>الهاتف</small><span class="val">+213 779 79 14 98</span></span>
+          <span><small>Phone</small><span class="val">+213 779 79 14 98</span></span>
         </a>
         <div class="contact-row">
           <span class="ic">🕘</span>
-          <span><small>أوقات الرد</small>يوميا، 9:00 - 16:00</span>
+          <span><small>Reply hours</small>Daily, 9:00 - 16:00</span>
         </div>
       </section>
     </div>
   </main>
 
-  <script>
+  <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
     const $ = (id) => document.getElementById(id);
-    const titles = { home: 'الرئيسية', profile: 'بروفايلك', contact: 'اتصل بنا' };
+    let currentUser = null, burstDone = false;
+    const titles = { home: 'Home', profile: 'Profile', contact: 'Contact us' };
 
     // ---------- القائمة الجانبية ----------
     function openDrawer() { $('drawer').classList.add('open'); $('overlay').classList.add('show'); $('drawer').setAttribute('aria-hidden', 'false'); }
@@ -239,14 +176,18 @@
 
     // ---------- تحميل بيانات المستخدم ----------
     function fill(me) {
-      $('greeting').textContent = 'أهلا بك يا ' + me.name;
+      $('greeting').textContent = 'Welcome, ' + me.name;
       $('pName').value = me.name;
-      $('pPhone').value = me.phone;
+      $('pPhone').value = me.phone || '';
     }
-    fetch('/api/me')
-      .then(r => { if (!r.ok) throw 0; return r.json(); })
-      .then(me => { fill(me); burst(); })
-      .catch(() => { location.href = '/'; });
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { location.href = '/'; return; }
+      currentUser = user;
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      const d = snap.exists() ? snap.data() : {};
+      fill({ name: d.name || user.displayName || 'friend', phone: d.phone || '' });
+      if (!burstDone) { burstDone = true; burst(); }
+    });
 
     // ---------- تعديل البروفايل ----------
     function setErr(inputId, errId, msg) {
@@ -262,35 +203,26 @@
       $('profileMsg').textContent = ''; $('profileMsg').className = 'msg';
 
       let ok = true;
-      if (name.length < 2 || !/^[\p{L}\s'’-]+$/u.test(name)) { setErr('pName', 'pNameErr', 'اكتب اسمك (حرفين على الأقل، حروف فقط).'); ok = false; }
+      if (name.length < 2 || !/^[\p{L}\s'’-]+$/u.test(name)) { setErr('pName', 'pNameErr', 'Enter your name (at least 2 letters, letters only).'); ok = false; }
       if (!ok) return;
 
       const btn = $('saveBtn');
       btn.disabled = true;
       try {
-        const r = await fetch('/api/profile', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name }),
-        });
-        const data = await r.json().catch(() => ({}));
-        if (r.status === 401) { location.href = '/'; return; }
-        if (data.ok) {
-          fill(data);
-          $('profileMsg').textContent = '✅ تم حفظ التعديلات';
-          $('profileMsg').className = 'msg ok';
-        } else if (data.field === 'name') setErr('pName', 'pNameErr', data.error);
-        else { $('profileMsg').textContent = data.error || 'صرا خطأ، حاول مرة أخرى.'; $('profileMsg').className = 'msg bad'; }
+        await updateDoc(doc(db, 'users', currentUser.uid), { name });
+        $('greeting').textContent = 'Welcome, ' + name;
+        $('profileMsg').textContent = '✅ Changes saved';
+        $('profileMsg').className = 'msg ok';
       } catch {
-        $('profileMsg').textContent = 'تعذر الاتصال بالسيرفر.'; $('profileMsg').className = 'msg bad';
+        $('profileMsg').textContent = 'Could not save. Please try again.'; $('profileMsg').className = 'msg bad';
       }
       btn.disabled = false;
     });
 
-    // ---------- تسجيل الخروج ----------
+    // ---------- Sign out ----------
     $('logout').addEventListener('click', async (e) => {
       e.currentTarget.disabled = true;
-      try { await fetch('/api/logout', { method: 'POST' }); } catch {}
+      try { await signOut(auth); } catch {}
       location.href = '/';
     });
 

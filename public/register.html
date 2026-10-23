@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>Create account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+:root{--bg:#070808;--card:#0e1010;--line:#2a3030;--text:#ececec;--muted:#8a9292;--accent:#55A9A0;--on-accent:#041211;--error:#f0716b;--ok:#6fd49a;--glow:rgba(85,169,160,.28)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:"Inter","Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);background:var(--bg);overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;border-radius:50%;z-index:0;pointer-events:none}
+body::before{width:480px;height:480px;top:-170px;right:-140px;background:radial-gradient(circle,rgba(85,169,160,.24),transparent 65%);animation:drift1 16s ease-in-out infinite}
+body::after{width:420px;height:420px;bottom:-170px;left:-130px;background:radial-gradient(circle,rgba(85,169,160,.14),transparent 65%);animation:drift2 20s ease-in-out infinite}
+@keyframes drift1{50%{transform:translate(-70px,90px)}}
+@keyframes drift2{50%{transform:translate(80px,-70px)}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+label{display:block;margin:18px 0 2px;font-weight:500;font-size:13px;color:var(--muted)}
+input{--track:#2a3030;width:100%;padding:11px 2px 13px;border:0;border-radius:0;background-color:transparent;background-image:linear-gradient(var(--accent),var(--accent)),linear-gradient(var(--track),var(--track));background-repeat:no-repeat;background-size:0% 2px,100% 1.5px;background-position:left bottom,left bottom;background-origin:border-box;color:var(--text);font-size:16px;font-family:inherit;outline:none;transition:background-size .35s ease}
+input::placeholder{color:#4b5454}
+input:focus{background-size:100% 2px,100% 1.5px;transition:background-size 1.6s cubic-bezier(.4,0,.2,1)}
+input.invalid{--track:var(--error);animation:shake .35s}
+input:-webkit-autofill{-webkit-text-fill-color:var(--text);caret-color:var(--text);transition:background-color 600000s 0s,color 600000s 0s,background-size 1.6s cubic-bezier(.4,0,.2,1)}
+.err{color:var(--error);font-size:13px;min-height:18px;margin-top:4px}
+.hidden{display:none}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+body{display:flex;align-items:center;justify-content:center;padding:16px}
+.card{position:relative;z-index:1;width:100%;max-width:410px;background:var(--card);border:1px solid #1a1e1e;border-radius:22px;padding:34px 28px 28px;box-shadow:0 30px 60px rgba(0,0,0,.6);animation:rise .6s ease both}
+h1{margin:0 0 6px;font-size:25px;font-weight:700;text-align:center}
+.wave{display:inline-block;transform-origin:70% 70%;animation:wave 2.2s ease-in-out infinite}
+@keyframes wave{0%,60%,100%{transform:rotate(0)}10%,30%{transform:rotate(16deg)}20%,40%{transform:rotate(-10deg)}50%{transform:rotate(8deg)}}
+.sub{margin:0 0 10px;text-align:center;color:var(--muted);font-size:14px}
+form>*{animation:rise .55s ease both}
+form>*:nth-child(1){animation-delay:.08s}form>*:nth-child(2){animation-delay:.14s}form>*:nth-child(3){animation-delay:.2s}
+form>*:nth-child(4){animation-delay:.26s}form>*:nth-child(5){animation-delay:.32s}form>*:nth-child(6){animation-delay:.38s}
+form>*:nth-child(7){animation-delay:.44s}form>*:nth-child(8){animation-delay:.5s}form>*:nth-child(9){animation-delay:.56s}
+form>*:nth-child(10){animation-delay:.62s}
+#email,#phone,#password,#code{direction:ltr;text-align:left;background-position:left bottom,left bottom}
+button.main{width:100%;margin-top:22px;padding:14px;border:0;border-radius:12px;background:var(--accent);color:var(--on-accent);font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:transform .15s,box-shadow .25s,filter .2s}
+button.main:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 26px var(--glow);filter:brightness(1.08)}
+button.main:active:not(:disabled){transform:scale(.98)}
+button.main:disabled{opacity:.5;cursor:not-allowed}
+.foot{text-align:center;margin:20px 0 0;font-size:14px;color:var(--muted)}
+.foot a{color:var(--accent);font-weight:700;text-decoration:none;background:linear-gradient(var(--accent),var(--accent)) no-repeat left bottom/0% 1.5px;transition:background-size .3s;padding-bottom:2px}
+.foot a:hover{background-size:100% 1.5px}
+.global-msg{text-align:center;font-size:14px;margin-top:12px;min-height:20px}
+.global-msg.bad{color:var(--error)}
+.global-msg.good{color:var(--ok)}
+
+.card{max-width:450px}
+.row{display:flex;gap:18px}
+.row>div{flex:1;min-width:0}
+.inline{display:flex;gap:12px;align-items:center}
+.inline input{flex:1;min-width:0}
+#code{letter-spacing:7px;text-align:center;font-size:18px;background-position:center bottom,center bottom}
+.small-btn{padding:8px 14px;border:1px solid var(--accent);border-radius:10px;background:transparent;color:var(--accent);font-size:14px;font-weight:700;font-family:inherit;white-space:nowrap;cursor:pointer;transition:background .2s,color .2s}
+.small-btn:hover:not(:disabled){background:var(--accent);color:var(--on-accent)}
+.small-btn:disabled{opacity:.4;cursor:not-allowed}
+.register-btn{width:100%;margin-top:24px;padding:14px;border:1.5px solid var(--accent);border-radius:12px;background-color:transparent;background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-position:left center;background-size:0% 100%;color:var(--accent);font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:background-size .4s ease,color .35s,box-shadow .3s,transform .15s}
+.register-btn:hover:not(:disabled){background-size:100% 100%;color:var(--on-accent);box-shadow:0 10px 26px var(--glow)}
+.register-btn:active:not(:disabled){transform:scale(.98)}
+.register-btn:disabled{opacity:.35;cursor:not-allowed}
+.ok{color:var(--ok);font-size:13px;margin-top:8px;animation:rise .4s ease both}
+</style>
+</head>
+<body>
+  <main class="card">
+    <h1>Create account ✨</h1>
+    <p class="sub">Fill in your details and verify your phone</p>
+
+    <form id="form" novalidate>
+      <div class="row">
+        <div>
+          <label for="name">First name</label>
+          <input id="name" type="text" autocomplete="given-name" maxlength="30" placeholder="John" />
+          <div class="err" id="nameErr"></div>
+        </div>
+        <div>
+          <label for="name2">Last name</label>
+          <input id="name2" type="text" autocomplete="family-name" maxlength="30" placeholder="Smith" />
+          <div class="err" id="name2Err"></div>
+        </div>
+      </div>
+
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="email" placeholder="name@gmail.com" />
+      <div class="err" id="emailErr"></div>
+
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="new-password" placeholder="At least 6 characters" />
+      <div class="err" id="passwordErr"></div>
+
+      <label for="phone">Phone number</label>
+      <div class="inline">
+        <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="0555123456" />
+        <button type="button" class="small-btn" id="sendBtn">Send code</button>
+      </div>
+      <div class="err" id="phoneErr"></div>
+
+      <div id="codeBox" class="hidden">
+        <label for="code">Verification code (6 digits)</label>
+        <div class="inline">
+          <input id="code" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••" />
+          <button type="button" class="small-btn" id="verifyBtn">Verify</button>
+        </div>
+        <div class="err" id="codeErr"></div>
+      </div>
+      <div class="ok hidden" id="verifiedMsg">✅ Phone verified</div>
+
+      <button type="submit" class="register-btn" id="registerBtn" disabled>Register</button>
+      <div class="global-msg" id="globalMsg"></div>
+    </form>
+
+    <p class="foot">Already have an account? <a href="/">Sign in</a></p>
+  </main>
+
+  <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import { createUserWithEmailAndPassword, updateProfile, signOut }
+      from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { doc, setDoc, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+    const PHONE_RE = /^(?:\+213|00213|0)([567])\d{8}$/;
+    const NAME_RE = /^[\p{L}\s'’-]+$/u;
+    const $ = (id) => document.getElementById(id);
+
+    let verifiedPhone = '';   // الرقم اللي تحقق منو
+    let sentPhone = '';       // الرقم اللي بعثنا عليه الرمز
+    let timer = null;
+
+    function showErr(inputId, errId, msg) {
+      $(errId).textContent = msg || '';
+      const el = $(inputId);
+      el.classList.remove('invalid');
+      if (msg) { void el.offsetWidth; el.classList.add('invalid'); }
+    }
+    function clearErrors() {
+      [['name','nameErr'],['name2','name2Err'],['email','emailErr'],['password','passwordErr'],['phone','phoneErr'],['code','codeErr']]
+        .forEach(([i, e]) => showErr(i, e, ''));
+      $('globalMsg').textContent = ''; $('globalMsg').className = 'global-msg';
+    }
+    function normalizePhone(p) { return p.replace(/[\s.\-()]/g, ''); }
+
+    async function post(url, body) {
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      let data = {};
+      try { data = await r.json(); } catch {}
+      return data;
+    }
+
+    function startCountdown(seconds) {
+      const btn = $('sendBtn');
+      clearInterval(timer);
+      let left = seconds;
+      btn.disabled = true; btn.textContent = `${left}s`;
+      timer = setInterval(() => {
+        left -= 1;
+        if (left <= 0) { clearInterval(timer); btn.disabled = false; btn.textContent = 'Resend'; }
+        else btn.textContent = `${left}s`;
+      }, 1000);
+    }
+
+    // إذا بدّل الرقم بعد التحقق: نلغي التحقق
+    $('phone').addEventListener('input', () => {
+      if (verifiedPhone) {
+        verifiedPhone = '';
+        $('verifiedMsg').classList.add('hidden');
+        $('registerBtn').disabled = true;
+      }
+    });
+
+    // ---------- Send code ----------
+    $('sendBtn').addEventListener('click', async () => {
+      const name = $('name').value.trim();
+      const phone = normalizePhone($('phone').value);
+      showErr('phone', 'phoneErr', '');
+      if (!PHONE_RE.test(phone)) { showErr('phone', 'phoneErr', 'Invalid number. Example: 0555123456 or +213555123456'); return; }
+
+      $('sendBtn').disabled = true;
+      try {
+        const data = await post('/api/send-otp', { name: name.length >= 2 ? name : 'User', phone });
+        if (data.ok) {
+          sentPhone = data.phone;
+          $('codeBox').classList.remove('hidden');
+          $('code').value = ''; $('code').focus();
+          startCountdown(data.cooldown || 60);
+        } else {
+          showErr('phone', 'phoneErr', data.error || 'Something went wrong. Please try again.');
+          if (data.retryAfter) startCountdown(data.retryAfter); else $('sendBtn').disabled = false;
+        }
+      } catch {
+        showErr('phone', 'phoneErr', 'Could not reach the server.');
+        $('sendBtn').disabled = false;
+      }
+    });
+
+    // ---------- التحقق من الرمز ----------
+    $('verifyBtn').addEventListener('click', async () => {
+      const code = $('code').value.trim();
+      showErr('code', 'codeErr', '');
+      if (!/^\d{6}$/.test(code)) { showErr('code', 'codeErr', 'Enter the full 6-digit code.'); return; }
+      $('verifyBtn').disabled = true;
+      try {
+        const data = await post('/api/verify-otp', { phone: sentPhone, code });
+        if (data.ok) {
+          verifiedPhone = sentPhone;
+          $('codeBox').classList.add('hidden');
+          $('verifiedMsg').classList.remove('hidden');
+          $('registerBtn').disabled = false;
+          // نحيد أي جلسة سيرفر تفتحت بالـ OTP، باش صفحة الدخول ما تحولناش مباشرة
+          fetch('/api/logout', { method: 'POST' }).catch(() => {});
+        } else {
+          showErr('code', 'codeErr', data.error || 'Incorrect code.');
+        }
+      } catch {
+        showErr('code', 'codeErr', 'Could not reach the server.');
+      }
+      $('verifyBtn').disabled = false;
+    });
+
+    // ---------- التسجيل ----------
+    function firebaseMsg(code) {
+      return ({
+        'auth/email-already-in-use': 'This email is already registered.',
+        'auth/invalid-email': 'Invalid email.',
+        'auth/weak-password': 'Password is too weak (at least 6 characters).',
+        'auth/network-request-failed': 'Network problem. Please try again.',
+        'auth/operation-not-allowed': 'Enable Email/Password in Firebase > Authentication.',
+        'auth/api-key-not-valid.-please-pass-a-valid-api-key.': 'Invalid Firebase key in firebase-config.js',
+      })[code] || 'Something went wrong. Please try again. (' + code + ')';
+    }
+
+    $('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearErrors();
+      const name = $('name').value.trim();
+      const name2 = $('name2').value.trim();
+      const email = $('email').value.trim();
+      const password = $('password').value;
+      const phone = normalizePhone($('phone').value);
+
+      let ok = true;
+      if (name.length < 2 || !NAME_RE.test(name)) { showErr('name', 'nameErr', 'Invalid first name.'); ok = false; }
+      if (name2.length < 2 || !NAME_RE.test(name2)) { showErr('name2', 'name2Err', 'Invalid last name.'); ok = false; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr('email', 'emailErr', 'Invalid email.'); ok = false; }
+      if (password.length < 6) { showErr('password', 'passwordErr', 'Password must be at least 6 characters.'); ok = false; }
+      if (!verifiedPhone || sentPhone !== verifiedPhone || !PHONE_RE.test(phone)) {
+        showErr('phone', 'phoneErr', 'Please verify your phone number first.'); ok = false;
+      }
+      if (!ok) return;
+
+      const btn = $('registerBtn');
+      btn.disabled = true; btn.textContent = 'Registering...';
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(cred.user, { displayName: name + ' ' + name2 });
+        await setDoc(doc(db, 'users', cred.user.uid), {
+          name, name2, email, phone: verifiedPhone, phoneVerified: true, createdAt: serverTimestamp(),
+        });
+        await signOut(auth); // يرجع لصفحة الدخول ويسجل دخوله بنفسو
+        $('globalMsg').textContent = '✅ Account created! Redirecting to sign in...';
+        $('globalMsg').className = 'global-msg good';
+        setTimeout(() => { location.href = '/'; }, 1500);
+      } catch (err) {
+        $('globalMsg').textContent = firebaseMsg(err.code || String(err));
+        $('globalMsg').className = 'global-msg bad';
+        btn.disabled = false; btn.textContent = 'Register';
+      }
+    });
+  </script>
+</body>
+</html>
