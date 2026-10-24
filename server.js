@@ -123,22 +123,28 @@ const verifyLimiter = rateLimit({
 
 // ---------- API ----------
 app.post('/api/send-otp', sendLimiter, async (req, res) => {
+  console.log('📩 [1] طلب إرسال وصل:', { name: req.body.name, phone: req.body.phone });
+
   const name = cleanName(req.body.name);
   const phone = normalizePhone(req.body.phone);
-  if (!name) return res.status(400).json({ ok: false, field: 'name', error: 'Name must be at least 2 letters (letters only).' });
-  if (!phone) return res.status(400).json({ ok: false, field: 'phone', error: 'Invalid phone number. Example: 0555123456' });
+  console.log('📞 [2] بعد التنظيف:', { name, phone });
+  if (!name) { console.log('🚫 [2] الاسم غير صالح'); return res.status(400).json({ ok: false, field: 'name', error: 'Name must be at least 2 letters (letters only).' }); }
+  if (!phone) { console.log('🚫 [2] الرقم غير صالح'); return res.status(400).json({ ok: false, field: 'phone', error: 'Invalid phone number. Example: 0555123456' }); }
 
   const now = Date.now();
   const existing = otps.get(phone);
   if (existing) {
     const wait = RESEND_COOLDOWN_S - Math.floor((now - existing.lastSent) / 1000);
     if (wait > 0) {
+      console.log('⏳ [3] لازم تستنى', wait, 'ثانية قبل إعادة الإرسال');
       return res.status(429).json({ ok: false, error: `Please wait ${wait} seconds before resending.`, retryAfter: wait });
     }
   }
 
   const recent = (sends.get(phone) || []).filter((t) => now - t < 3600 * 1000);
+  console.log('🔢 [4] عدد المحاولات في آخر ساعة:', recent.length, '/', MAX_SENDS_PER_HOUR);
   if (recent.length >= MAX_SENDS_PER_HOUR) {
+    console.log('🚫 [4] وصل للحد الأقصى');
     return res.status(429).json({ ok: false, error: 'Maximum messages reached for this number. Try again in an hour.' });
   }
 
@@ -146,16 +152,20 @@ app.post('/api/send-otp', sendLimiter, async (req, res) => {
   otps.set(phone, { code, name, expires: now + OTP_TTL_MS, attempts: 0, lastSent: now });
 
   try {
+    console.log('📤 [5] نبعث SMS ل', phone, '... نستنى رد المزوّد');
 await sendSms(phone, `Lz-${code}\nis your verification code.`); 
+    console.log('✅ [6] المزوّد قبل الطلب، SMS تبعث ل', phone, '(بعد', Date.now() - now, 'ms)');
     recent.push(now);
     sends.set(phone, recent);
   } catch (e) {
+    console.error('❌ [7] فشل الإرسال (بعد', Date.now() - now, 'ms):', e);
     console.error('SMS error:', e.message);
     otps.delete(phone);
     return res.status(502).json({ ok: false, error: 'Could not send the message. Please try later.' });
   }
 
   // لا نرسل الرمز للمتصفح أبدا
+  console.log('📨 [8] رجّعنا الرد للمتصفح');
   res.json({ ok: true, phone, cooldown: RESEND_COOLDOWN_S });
 });
 
