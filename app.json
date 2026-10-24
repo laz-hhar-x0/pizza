@@ -1,10 +1,11 @@
 {
   "expo": {
-    "name": "Pizza",
+    "name": "PizzaTi",
     "slug": "mon-app",
+    "owner": "lazhar17",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icon.png",
     "scheme": "monapp",
     "userInterfaceStyle": "automatic",
     "ios": {
@@ -13,16 +14,16 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/icon.png",
-        "backgroundImage": "./assets/images/icon.png",
-        "monochromeImage": "./assets/images/icon.png"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundImage": "./assets/icon.png",
+        "monochromeImage": "./assets/icon.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.hakim33.monapp"
+      "package": "com.lazhar17.pizza"
     },
     "web": {
       "output": "server",
-      "favicon": "./assets/images/icon.png"
+      "favicon": "./assets/icon.png"
     },
     "plugins": [
       "expo-router",
@@ -30,7 +31,7 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#208AEF",
-          "image": "./assets/images/icon.png",
+          "image": "./assets/icon.png",
           "imageWidth": 76
         }
       ]
@@ -46,14 +47,11 @@
         }
       },
       "eas": {
-        "projectId": "3a0c8c5a-04ff-437f-b9f0-fbcacd89f8e0"
+        "projectId": "9d880473-3db0-4f8f-b447-0f18cec51018"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/3a0c8c5a-04ff-437f-b9f0-fbcacd89f8e0"
     }
   }
 }
