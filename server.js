@@ -18,7 +18,7 @@ if (!process.env.SESSION_SECRET) {
 const OTP_TTL_MS = 5 * 60 * 1000;
 const RESEND_COOLDOWN_S = 60;
 const MAX_ATTEMPTS = 5;
-const MAX_SENDS_PER_HOUR = 3; // لكل رقم (يحمي الرصيد تاعك)
+const MAX_SENDS_PER_HOUR = 1000; // لكل رقم (يحمي الرصيد تاعك)
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
 app.use(express.json({ limit: '10kb' }));
