@@ -456,8 +456,7 @@ a.contact-row:hover{transform:translateX(4px);border-color:var(--accent)}
 
   <script type="module">
     import { auth, db } from './firebase-config.js';
-    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-    import {
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";    import {
       doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc,
       query, where, orderBy, limit, serverTimestamp, Timestamp, onSnapshot, deleteDoc
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
