@@ -34,7 +34,10 @@ yarn-error.*
 # TypeScript
 *.tsbuildinfo
 
-
+echo "serviceAccountKey.json" >> .gitignore
+echo ".env" >> .gitignore
+cat .gitignore
 
 firebase-service-account.json
-serviceAccountKey.json
+serviceAccountKey.jsonserviceAccountKey.json
+serviceAccountKey
