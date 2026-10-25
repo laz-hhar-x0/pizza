@@ -55,11 +55,11 @@ button.main:disabled{opacity:.5;cursor:not-allowed}
 <body>
   <main class="card">
     <h1>❤️ Welcome ❤️ <span class="wave"></span></h1>
-    <p class="sub">Sign in with your email or phone and password</p>
+    <p class="sub">Sign in with your email and password</p>
 
     <form id="form" novalidate>
-      <label for="email">Email or phone</label>
-      <input id="email" type="text" autocomplete="username" placeholder="lazhhar2@gmail.com / 077979" />
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="email" placeholder="lazhar@gmail.com" />
       <div class="err" id="emailErr"></div>
 
       <label for="password">Password</label>
@@ -89,9 +89,9 @@ button.main:disabled{opacity:.5;cursor:not-allowed}
 
     function firebaseMsg(code) {
       return ({
-        'auth/invalid-credential': 'Incorrect email/phone or password.',
-        'auth/user-not-found': 'Incorrect email/phone or password.',
-        'auth/wrong-password': 'Incorrect email/phone or password.',
+        'auth/invalid-credential': 'Incorrect email or password.',
+        'auth/user-not-found': 'Incorrect email or password.',
+        'auth/wrong-password': 'Incorrect email or password.',
         'auth/invalid-email': 'Invalid email.',
         'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
         'auth/user-disabled': 'This account is disabled.',
@@ -107,40 +107,15 @@ button.main:disabled{opacity:.5;cursor:not-allowed}
       showErr('email', 'emailErr', ''); showErr('password', 'passwordErr', '');
       $('globalMsg').textContent = ''; $('globalMsg').className = 'global-msg';
 
-      let email = $('email').value.trim();
+      const email = $('email').value.trim();
       const password = $('password').value;
       let ok = true;
-      const isPhone = /^\+?[0-9\s]{8,15}$/.test(email);
-      if (!isPhone && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr('email', 'emailErr', 'Invalid email or phone.'); ok = false; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr('email', 'emailErr', 'Invalid email.'); ok = false; }
       if (!password) { showErr('password', 'passwordErr', 'Enter your password.'); ok = false; }
       if (!ok) return;
 
       const btn = $('loginBtn');
-      const resetBtn = () => { btn.disabled = false; btn.textContent = 'Sign in'; };
       btn.disabled = true; btn.textContent = 'Signing in...';
-
-      // phone number -> find the email linked to it (via server.js)
-      if (isPhone) {
-        try {
-          const r = await fetch('/api/email-by-phone', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone: email.replace(/\s+/g, '') })
-          });
-          const j = await r.json();
-          if (!j.email) {
-            showErr('email', 'emailErr', 'No account with this number.');
-            resetBtn();
-            return;
-          }
-          email = j.email;
-        } catch {
-          showErr('email', 'emailErr', 'Network problem. Please try again.');
-          resetBtn();
-          return;
-        }
-      }
-
       try {
         // session lasts only while the browser is open
         await setPersistence(auth, browserSessionPersistence);
@@ -151,7 +126,7 @@ button.main:disabled{opacity:.5;cursor:not-allowed}
       } catch (err) {
         $('globalMsg').textContent = firebaseMsg(err.code || String(err));
         $('globalMsg').className = 'global-msg bad';
-        resetBtn();
+        btn.disabled = false; btn.textContent = 'Sign in';
       }
     });
   </script>

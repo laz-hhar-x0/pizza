@@ -7,18 +7,6 @@ const fs = require('fs');
 const path = require('path');
 const { sendSms } = require('./sms');
 
-
-const { initializeApp, cert } = require('firebase-admin/app');
-const { getFirestore } = require('firebase-admin/firestore');
-
-const serviceAccount = require('./serviceAccountKey.json');
-
-const firebaseApp = initializeApp({
-  credential: cert(serviceAccount),
-});
-
-const firestore = getFirestore(firebaseApp);
-
 const app = express();
 app.set('trust proxy', 1); // مهم على Render (وراء proxy)
 const PORT = process.env.PORT || 3000;
@@ -134,53 +122,6 @@ const verifyLimiter = rateLimit({
 });
 
 // ---------- API ----------
-app.post('/api/email-by-phone', async (req, res) => {
-  try {
-    const phone = normalizePhone(req.body.phone);
-
-    if (!phone) {
-      return res.status(400).json({
-        ok: false,
-        error: 'Invalid phone number.',
-      });
-    }
-
-    const snapshot = await firestore
-      .collection('users')
-      .where('phone', '==', phone)
-      .limit(1)
-      .get();
-
-    if (snapshot.empty) {
-      return res.status(404).json({
-        ok: false,
-        error: 'No account with this number.',
-      });
-    }
-
-    const user = snapshot.docs[0].data();
-
-    if (!user.email) {
-      return res.status(404).json({
-        ok: false,
-        error: 'No email linked to this number.',
-      });
-    }
-
-    return res.json({
-      ok: true,
-      email: user.email,
-    });
-  } catch (error) {
-    console.error('Email lookup failed:', error.message);
-
-    return res.status(500).json({
-      ok: false,
-      error: 'Could not look up this phone number.',
-    });
-  }
-});
-
 app.post('/api/send-otp', sendLimiter, async (req, res) => {
   console.log('📩 [1] طلب إرسال وصل:', { name: req.body.name, phone: req.body.phone });
 
